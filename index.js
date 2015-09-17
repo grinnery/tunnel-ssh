@@ -33,6 +33,14 @@ function createConfig(userConfig) {
 function bindSSHConnection(config, server, netConnection) {
 
     var sshConnection = new Connection();
+
+    sshConnection.on('error', function(err) {
+        server.emit('error', err);
+        sshConnection.end();
+        netConnection.end();
+        server.close();
+    });
+
     server.emit('sshConnection', sshConnection, netConnection, server);
     sshConnection.on('ready', function() {
 
